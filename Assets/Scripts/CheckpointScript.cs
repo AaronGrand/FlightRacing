@@ -9,6 +9,11 @@ public class CheckpointScript : MonoBehaviour
     private int currentIndex;
 
     public bool gameIsFinished;
+    public bool gameStarted;
+
+    //public NetworkVariable<float> endTime = new NetworkVariable<float>(0f);
+    //public float endTime;
+    public float timer;
 
     public static CheckpointScript Instance { get; private set; }
 
@@ -34,8 +39,18 @@ public class CheckpointScript : MonoBehaviour
             checkpoints[i].GetComponent<Checkpoint>().id = i;
         }
 
+        checkpoints[checkpoints.Count-1].GetComponent<Checkpoint>().isLast = true;
+
         checkpoints[0].SetActive(true);
         currentIndex = 0;
+    }
+
+    private void Update()
+    {
+        if (GameState.Instance.GetState() == STATE.INGAME)
+        {
+            timer = timer + Time.deltaTime;
+        }
     }
 
     public void NextIndex()
@@ -44,13 +59,33 @@ public class CheckpointScript : MonoBehaviour
         currentIndex++;
         if (currentIndex == checkpoints.Count)
         {
-            gameIsFinished = true;
+            GameState.Instance.SetState(STATE.ENDED);
             Debug.Log("Game Finished");
-        } else if(!gameIsFinished)
+        } else if(GameState.Instance.GetState() != STATE.ENDED)
         {
             checkpoints[currentIndex].SetActive(true);
         }
     }
+    /*
+    public void StartTimer()
+    {
+        gameStarted = true;
+    }
 
+    public void StopTimer(FlightController3D flightController3D)
+    {
+        if (!gameIsFinished)
+        {
+            gameIsFinished = true;
+            //endTime.Value = timer;
+            stopGameClientRpc();
+            //endTime = timer;
+        }
+    }
 
+    [ClientRpc]
+    private void stopGameClientRpc()
+    {
+        endTime.Value = timer;
+    }*/
 }

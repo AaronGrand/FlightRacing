@@ -78,27 +78,31 @@ public class FlightController3D : NetworkBehaviour
         
     }
 
-    private void Start()
+    /*private void Start()
     {
-
-    }
-
+        CheckpointScript.Instance.StartTimer();
+    }*/
+    //private NetworkVariable<int> randomNumber = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     private void Update()
     {
-
-        if(!gameStarted && (int)OwnerClientId == HostManager.Instance.maxConnections-1)
+        /*
+        Debug.Log(OwnerClientId + "; randomNumber: " + randomNumber.Value);
+        if (Input.GetKeyDown(KeyCode.T) && IsOwner)
         {
-            foreach(GameObject player in GameObject.FindGameObjectsWithTag("Player"))
-            {
-                player.GetComponent<FlightController3D>().gameStarted = true;
-            }
+            randomNumber.Value = Random.Range(0, 100);
+        }*/
+
+
+        if(GameState.Instance.GetState() == STATE.NOT_STARTED && (int)OwnerClientId == HostManager.Instance.maxConnections-1)
+        {
             if (IsOwner)
             {
                 rb.useGravity = true;
             }
+            GameState.Instance.SetState(STATE.INGAME);
         }
 
-        if (IsOwner && gameStarted)
+        if (IsOwner && GameState.Instance.GetState() == STATE.INGAME)
         {
             Movement();
         }
@@ -137,7 +141,7 @@ public class FlightController3D : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        if (IsOwner && gameStarted)
+        if (IsOwner && GameState.Instance.GetState() == STATE.INGAME)
         {
             float dt = Time.deltaTime;
 

@@ -4,15 +4,15 @@ using UnityEngine;
 public class Checkpoint : MonoBehaviour
 {
     public int id;
-
-    public Checkpoint(int id)
-    {
-        this.id = id;
-    }
+    public bool isLast = false;
 
     private void OnTriggerEnter(Collider other)
     {
         Debug.Log("Collision");
+        /*if (isLast)
+        {
+            CheckpointScript.Instance.StopTimer(other.gameObject.GetComponentInParent<FlightController3D>());
+        }*/
         CheckpointScript.Instance.NextIndex();
     }
 }
