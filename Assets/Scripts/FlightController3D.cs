@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using TMPro;
+using Unity.Collections;
 
 public class FlightController3D : NetworkBehaviour
 {
@@ -9,10 +11,16 @@ public class FlightController3D : NetworkBehaviour
 
     [SerializeField] private Rigidbody rb;
 
+    [Header("NetworkVariables")]
+    [SerializeField] public NetworkVariable<FixedString32Bytes> userName = new NetworkVariable<FixedString32Bytes>("",NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+    [Header("UI")]
+    [SerializeField] private TextMeshProUGUI userNameText;
+
 
     [Header("Movement Variables")]
-
-    private bool gameStarted = false;
+    [SerializeField] private float maxThrust = 500f;
+    [SerializeField] private int throttleSpeedInc;
 
     private float currentYawSpeed;
     private float currentPitchSpeed;
@@ -21,8 +29,6 @@ public class FlightController3D : NetworkBehaviour
     private float angleOfAttackPitch;
     private float angleOfAttackYaw;
 
-    [SerializeField] private float maxThrust = 500f;
-    [SerializeField] private int throttleSpeedInc;
     private int throttleInput;
     private float throttle;
 
@@ -69,6 +75,8 @@ public class FlightController3D : NetworkBehaviour
 
     #region Public variables
 
+
+
     #endregion
 
     #region Unity functions
@@ -78,20 +86,23 @@ public class FlightController3D : NetworkBehaviour
         
     }
 
-    /*private void Start()
+    private void Start()
     {
-        CheckpointScript.Instance.StartTimer();
-    }*/
-    //private NetworkVariable<int> randomNumber = new NetworkVariable<int>(1, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        if (IsHost)
+        {
+            userName.Value = GameState.Instance.userName;
+        }
+        if (IsClient && !IsHost)
+        {
+            SetNameServerRpc(GameState.Instance.userName);
+        }
+        userNameText.text = GameState.Instance.userName.ToString();
+    }
+
     private void Update()
     {
-        /*
-        Debug.Log(OwnerClientId + "; randomNumber: " + randomNumber.Value);
-        if (Input.GetKeyDown(KeyCode.T) && IsOwner)
-        {
-            randomNumber.Value = Random.Range(0, 100);
-        }*/
 
+        Debug.Log(userName.Value.ToString());
 
         if(GameState.Instance.GetState() == STATE.NOT_STARTED && (int)OwnerClientId == HostManager.Instance.maxConnections-1)
         {
@@ -300,7 +311,6 @@ public class FlightController3D : NetworkBehaviour
         return Mathf.Clamp(value + delta, min, max);
     }
 
-
     public static Vector3 Scale6(
     Vector3 value,
     float posX, float negX,
@@ -340,5 +350,30 @@ public class FlightController3D : NetworkBehaviour
         return result;
     }
 
+    //SET CLIENT NAME ON HOST
+    [ServerRpc(RequireOwnership = false)]
+    private void SetNameServerRpc(FixedString32Bytes name)
+    {
+        if (!IsLocalPlayer)
+        {
+            userName.Value = name;
+            userNameText.text = name.ToString();
+        }
+        if (IsLocalPlayer)
+        {
+            SetNameClientRpc(userName.Value);
+        }
+    }
+
+    //SET HOST NAME ON CLIENT
+    [ClientRpc]
+    private void SetNameClientRpc(FixedString32Bytes name)
+    {
+        if (!IsLocalPlayer)
+        {
+            userName.Value = name;
+            userNameText.text = name.ToString();
+        }
+    }
     #endregion
 }

@@ -723,6 +723,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameState:
     m_InternalValue: 0
+  userName: 
 --- !u!4 &514310049
 Transform:
   m_ObjectHideFlags: 0
@@ -2242,6 +2243,7 @@ MonoBehaviour:
   connectingPanel: {fileID: 1560245387}
   menuPanel: {fileID: 1201266762}
   joinCodeInputField: {fileID: 1062325455}
+  nameInputField: {fileID: 789569109}
 --- !u!114 &1148859373
 MonoBehaviour:
   m_ObjectHideFlags: 0

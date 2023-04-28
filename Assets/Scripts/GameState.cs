@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using Unity.Collections;
 
 public class GameState : NetworkBehaviour
 {
     public NetworkVariable<STATE> gameState = new NetworkVariable<STATE>(STATE.NOT_STARTED, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public FixedString32Bytes userName;
 
     public static GameState Instance { get; private set; }
 
@@ -24,7 +26,7 @@ public class GameState : NetworkBehaviour
 
     private void Update()
     {
-        Debug.Log("GameState: " + gameState.Value.ToString());
+        //Debug.Log("GameState: " + gameState.Value.ToString());
     }
 
     public STATE GetState()

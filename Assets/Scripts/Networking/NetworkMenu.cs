@@ -9,6 +9,7 @@ public class NetworkMenu : MonoBehaviour
     [SerializeField] private GameObject connectingPanel;
     [SerializeField] private GameObject menuPanel;
     [SerializeField] private TMP_InputField joinCodeInputField;
+    [SerializeField] private TMP_InputField nameInputField;
 
     private async void Start()
     {
@@ -30,14 +31,17 @@ public class NetworkMenu : MonoBehaviour
 
     public void StartHost()
     {
+        if(nameInputField.text == "") return;
+        GameState.Instance.userName = nameInputField.text;
         HostManager.Instance.StartHost();
     }
 
     public void StartClient()
     {
-        if (joinCodeInputField.text == "") return;
+        if (joinCodeInputField.text == "" || nameInputField.text == "") return;
         Debug.Log($"Starting Client: {joinCodeInputField.text}");
         ClientManager.Instance.StartClient(joinCodeInputField.text);
+        GameState.Instance.userName = nameInputField.text;
     }
 
     public void Exit()
