@@ -59,7 +59,7 @@ public class CheckpointScript : MonoBehaviour
         {
             GameState.Instance.SetState(STATE.ENDED);
             Debug.Log("Game Finished");
-            GameObject.Find("Menu").GetComponent<Menu>().winnerText.text = flightController.userName;
+            GameObject.Find("Menu").GetComponent<Menu>().winnerText.text = flightController.userName.ToString();
         } else if(GameState.Instance.GetState() != STATE.ENDED)
         {
             checkpoints[currentIndex].SetActive(true);
