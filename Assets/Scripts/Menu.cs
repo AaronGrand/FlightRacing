@@ -15,6 +15,8 @@ public class Menu : NetworkBehaviour
     private float countdownTime = 3.0f;
     private float timeRemaining;
 
+    public TextMeshProUGUI winnerText;
+
 
     private float time;
     private bool gameFinished;

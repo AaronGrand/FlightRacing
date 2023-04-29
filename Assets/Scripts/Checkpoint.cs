@@ -8,11 +8,11 @@ public class Checkpoint : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Collision");
-        /*if (isLast)
+        FlightController3D flightController = other.gameObject.GetComponent<FlightController3D>();
+
+        if (flightController.IsLocalPlayer)
         {
-            CheckpointScript.Instance.StopTimer(other.gameObject.GetComponentInParent<FlightController3D>());
-        }*/
-        CheckpointScript.Instance.NextIndex();
+            CheckpointScript.Instance.NextIndex(flightController);
+        }
     }
 }
