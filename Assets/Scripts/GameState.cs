@@ -43,6 +43,7 @@ public class GameState : NetworkBehaviour
 public enum STATE
 {
     NOT_STARTED,
+    TIMER,
     INGAME,
     ENDED
 }

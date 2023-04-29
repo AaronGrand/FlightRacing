@@ -81,13 +81,14 @@ public class FlightController3D : NetworkBehaviour
 
     #region Unity functions
 
-    private void Awake()
-    {
-        
-    }
+    
 
     private void Start()
     {
+
+        StartCoroutine(SetSpawnLocation(0.5f));
+        
+
         if (IsHost)
         {
             userName.Value = GameState.Instance.userName;
@@ -97,25 +98,21 @@ public class FlightController3D : NetworkBehaviour
             SetNameServerRpc(GameState.Instance.userName);
         }
         userNameText.text = GameState.Instance.userName.ToString();
+
+
     }
 
     private void Update()
     {
+        //Debug.Log(userName.Value.ToString());
 
-        Debug.Log(userName.Value.ToString());
-
-        if(GameState.Instance.GetState() == STATE.NOT_STARTED && (int)OwnerClientId == HostManager.Instance.maxConnections-1)
+        if(GameState.Instance.GetState() == STATE.INGAME) //GameState.Instance.GetState() == STATE.NOT_STARTED && (int)OwnerClientId == HostManager.Instance.maxConnections-1)
         {
             if (IsOwner)
             {
+                Movement();
                 rb.useGravity = true;
             }
-            GameState.Instance.SetState(STATE.INGAME);
-        }
-
-        if (IsOwner && GameState.Instance.GetState() == STATE.INGAME)
-        {
-            Movement();
         }
 
 
@@ -374,6 +371,16 @@ public class FlightController3D : NetworkBehaviour
             userName.Value = name;
             userNameText.text = name.ToString();
         }
+    }
+
+    private IEnumerator SetSpawnLocation(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+
+        GameObject pos = GameObject.FindGameObjectWithTag("StartPosition");
+
+        this.gameObject.transform.position = pos.transform.position;
+        this.gameObject.transform.rotation = pos.transform.rotation;
     }
     #endregion
 }
