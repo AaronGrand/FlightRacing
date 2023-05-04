@@ -9,6 +9,8 @@ public class GameState : NetworkBehaviour
     public NetworkVariable<STATE> gameState = new NetworkVariable<STATE>(STATE.NOT_STARTED, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     public FixedString32Bytes userName;
 
+    public bool localGameFinished = false;
+
     public static GameState Instance { get; private set; }
 
     private void Awake()

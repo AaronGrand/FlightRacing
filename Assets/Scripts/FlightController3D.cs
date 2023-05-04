@@ -89,6 +89,7 @@ public class FlightController3D : NetworkBehaviour
 
     private void Start()
     {
+        GameState.Instance.localGameFinished = false;
         if (IsHost)
         {
             userName.Value = GameState.Instance.userName;
@@ -106,7 +107,7 @@ public class FlightController3D : NetworkBehaviour
     {
         //Debug.Log(userName.Value.ToString());
 
-        if(GameState.Instance.GetState() == STATE.INGAME) //GameState.Instance.GetState() == STATE.NOT_STARTED && (int)OwnerClientId == HostManager.Instance.maxConnections-1)
+        if(GameState.Instance.GetState() == STATE.INGAME && !GameState.Instance.localGameFinished) //GameState.Instance.GetState() == STATE.NOT_STARTED && (int)OwnerClientId == HostManager.Instance.maxConnections-1)
         {
             if (IsOwner)
             {
@@ -115,7 +116,7 @@ public class FlightController3D : NetworkBehaviour
             }
         }
 
-        if(GameState.Instance.GetState() == STATE.ENDED)
+        if(GameState.Instance.localGameFinished)
         {
             rb.useGravity = false;
         }
@@ -154,7 +155,7 @@ public class FlightController3D : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        if (IsOwner && GameState.Instance.GetState() == STATE.INGAME)
+        if (IsOwner && GameState.Instance.GetState() == STATE.INGAME && !GameState.Instance.localGameFinished)
         {
             float dt = Time.deltaTime;
 
@@ -300,6 +301,16 @@ public class FlightController3D : NetworkBehaviour
         var inducedDrag = dragDirection * v2 * dragForce * this.inducedDrag * inducedDragCurve.Evaluate(Mathf.Max(0, localVelocity.z));
 
         return lift + inducedDrag;
+    }
+
+    #endregion
+
+    #region Public methods
+
+    public void EndGame()
+    {
+        rb.useGravity = false;
+        GameState.Instance.localGameFinished = true;
     }
 
     #endregion

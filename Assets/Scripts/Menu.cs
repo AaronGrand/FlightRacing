@@ -81,12 +81,13 @@ public class Menu : NetworkBehaviour
                 }
                 countdownText.text = "";
 
-            } else if(GameState.Instance.GetState() == STATE.INGAME)
+            } else if(GameState.Instance.GetState() == STATE.INGAME && !GameState.Instance.localGameFinished)
             {
+                timeRemaining = 0f;
                 countdownText.text = "";
             }
         }
-        if (GameState.Instance.GetState() == STATE.INGAME)
+        if (GameState.Instance.GetState() == STATE.INGAME && !GameState.Instance.localGameFinished)
         {
             timer.text = checkPointScript.timer.ToString("0.00");
         }
@@ -104,7 +105,7 @@ public class Menu : NetworkBehaviour
     {
 
 
-        //host wins
+        //host finishes
         if (IsHost)
         {
             timer.text = "";
@@ -112,9 +113,10 @@ public class Menu : NetworkBehaviour
             player.GetComponent<ScoreBoardPlayer>().SetPlayer(new PlayerStats(time, name));
             SetPlayerClientRpc(time, name);
         }
-        //client wins
+        //client finishes
         if(IsClient && !IsHost)
         {
+            timer.text = "";
             SetPlayerServerRpc(time, name);
         }
 
@@ -129,6 +131,9 @@ public class Menu : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void SetPlayerServerRpc(float time, FixedString32Bytes name)
     {
+        GameObject player = Instantiate(playerScorePrefab, scoreBoard.transform);
+        player.GetComponent<ScoreBoardPlayer>().SetPlayer(new PlayerStats(time, name));
+
         SetPlayerClientRpc(time, name);
     }
 
@@ -140,7 +145,6 @@ public class Menu : NetworkBehaviour
             timer.text = "";
             GameObject player = Instantiate(playerScorePrefab, scoreBoard.transform);
             player.GetComponent<ScoreBoardPlayer>().SetPlayer(new PlayerStats(time, name));
-            scoreBoard.SetActive(true);
         }
     }
 

@@ -47,7 +47,7 @@ public class CheckpointScript : MonoBehaviour
 
     private void Update()
     {
-        if (GameState.Instance.GetState() == STATE.INGAME)
+        if (GameState.Instance.GetState() == STATE.INGAME && !GameState.Instance.localGameFinished)
         {
             timer = timer + Time.deltaTime;
         }
@@ -61,7 +61,9 @@ public class CheckpointScript : MonoBehaviour
         if (currentIndex == checkpoints.Count)
         {
 
-            GameState.Instance.SetState(STATE.ENDED);
+            //GameState.Instance.SetState(STATE.ENDED);
+
+            flightController.EndGame();
 
             Debug.Log("Game Finished");
 
