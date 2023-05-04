@@ -12,7 +12,7 @@ public class CameraFollow : NetworkBehaviour
 
     private void Start()
     {
-        StartCoroutine(FindLocalPlayer());
+        StartCoroutine(FindLocalPlayer(1f));
     }
 
     private void LateUpdate()
@@ -31,9 +31,12 @@ public class CameraFollow : NetworkBehaviour
         Camera.main.transform.rotation = Quaternion.Slerp(Camera.main.transform.rotation, targetRotation, smoothTime);
     }
 
-    private IEnumerator FindLocalPlayer()
+    private IEnumerator FindLocalPlayer(float seconds)
     {
-        while (target == null)
+
+        yield return new WaitForSeconds(seconds);
+
+        //while (target == null)
         {
             foreach (NetworkObject identity in FindObjectsOfType<NetworkObject>())
             {
@@ -43,7 +46,7 @@ public class CameraFollow : NetworkBehaviour
                     break;
                 }
             }
-            yield return new WaitForSeconds(0.1f);
+            //yield return new WaitForSeconds(0.1f);
         }
     }
 }

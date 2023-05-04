@@ -8,7 +8,7 @@ public class Checkpoint : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        FlightController3D flightController = other.gameObject.GetComponent<FlightController3D>();
+        FlightController3D flightController = other.gameObject.GetComponentInParent<FlightController3D>();
 
         if (flightController.IsLocalPlayer)
         {

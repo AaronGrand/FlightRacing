@@ -6,6 +6,8 @@ public class CheckpointScript : MonoBehaviour
 {
     [SerializeField] List<GameObject> checkpoints;
 
+    [SerializeField] private Menu menu;
+
     private int currentIndex;
 
     public bool gameIsFinished;
@@ -55,11 +57,15 @@ public class CheckpointScript : MonoBehaviour
     {
         checkpoints[currentIndex].SetActive(false);
         currentIndex++;
+        //GAME FINISHED
         if (currentIndex == checkpoints.Count)
         {
+
             GameState.Instance.SetState(STATE.ENDED);
+
             Debug.Log("Game Finished");
-            GameObject.Find("Menu").GetComponent<Menu>().winnerText.text = flightController.userName.ToString();
+
+            menu.SetPlayer(timer, flightController.userName.Value);
         } else if(GameState.Instance.GetState() != STATE.ENDED)
         {
             checkpoints[currentIndex].SetActive(true);

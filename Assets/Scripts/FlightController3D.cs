@@ -81,14 +81,14 @@ public class FlightController3D : NetworkBehaviour
 
     #region Unity functions
 
-    
+    public override void OnNetworkSpawn()
+    {
+        StartCoroutine(SetSpawnLocation(1f));
+    }
+
 
     private void Start()
     {
-
-        StartCoroutine(SetSpawnLocation(0.5f));
-        
-
         if (IsHost)
         {
             userName.Value = GameState.Instance.userName;
@@ -113,6 +113,11 @@ public class FlightController3D : NetworkBehaviour
                 Movement();
                 rb.useGravity = true;
             }
+        }
+
+        if(GameState.Instance.GetState() == STATE.ENDED)
+        {
+            rb.useGravity = false;
         }
 
 
@@ -382,5 +387,6 @@ public class FlightController3D : NetworkBehaviour
         this.gameObject.transform.position = pos.transform.position;
         this.gameObject.transform.rotation = pos.transform.rotation;
     }
+
     #endregion
 }

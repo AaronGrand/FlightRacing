@@ -36,6 +36,18 @@ public class GameState : NetworkBehaviour
 
     public void SetState(STATE state)
     {
+        if (IsHost)
+        {
+            gameState.Value = state;
+        } else
+        {
+            SetStateServerRpc(state);
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SetStateServerRpc(STATE state)
+    {
         gameState.Value = state;
     }
 }
