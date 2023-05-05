@@ -1,14 +1,12 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using TMPro;
 using Unity.Collections;
-using UnityEditor;
 
 public class FlightController3D : NetworkBehaviour
 {
-    #region Private variables
+    #region Variables
 
     [SerializeField] private Rigidbody rb;
 
@@ -75,11 +73,9 @@ public class FlightController3D : NetworkBehaviour
 
     [SerializeField] Vector3 angularDrag;
 
-
-
-    #endregion
-
-    #region Public variables
+    [Header("Animations")]
+    [SerializeField] private GameObject Prop;
+    [SerializeField] private float rotationSpeed;
 
 
 
@@ -122,14 +118,24 @@ public class FlightController3D : NetworkBehaviour
 
     private void Update()
     {
-        //Debug.Log(userName.Value.ToString());
-
-        if(GameState.Instance.GetState() == STATE.INGAME && !GameState.Instance.localGameFinished) //GameState.Instance.GetState() == STATE.NOT_STARTED && (int)OwnerClientId == HostManager.Instance.maxConnections-1)
+        if (GameState.Instance.GetState() == STATE.INGAME && !GameState.Instance.localGameFinished) //GameState.Instance.GetState() == STATE.NOT_STARTED && (int)OwnerClientId == HostManager.Instance.maxConnections-1)
         {
+            //INGAME
+
+            //ROTATE PROP
+            Prop.transform.Rotate(new Vector3(0, 0, Time.deltaTime * rotationSpeed));
+
             if (IsOwner)
             {
+                //ALL LOCAL CLIENT THINGS HERE
+
                 Movement();
+                rb.isKinematic = false;
                 rb.useGravity = true;
+
+                //CHECK FOR BOOST
+                //ChangeWingTrailEffectThickness(0f);
+
             }
         }
 
@@ -137,37 +143,6 @@ public class FlightController3D : NetworkBehaviour
         {
             rb.useGravity = false;
         }
-
-
-
-        //Airplane move only if not dead
-        //if (!planeIsDead)
-        {
-            //Movement();
-
-            //Rotate propellers if any
-            //if (propellers.Length > 0)
-            {
-            //    RotatePropellers(propellers);
-            }
-        }
-        //else
-        {
-            //ChangeWingTrailEffectThickness(0f);
-        }
-
-        /*
-        //Control lights if any
-        if (turbineLights.Length > 0)
-        {
-            ControlEngineLights(turbineLights, currentEngineLightIntensity);
-        }
-
-        //Crash
-        if (!planeIsDead && HitSometing())
-        {
-            Crash();
-        }*/
     }
 
     private void FixedUpdate()
@@ -201,7 +176,6 @@ public class FlightController3D : NetworkBehaviour
     #endregion
 
     #region Private methods
-
 
     private void Movement()
     {
@@ -343,6 +317,8 @@ public class FlightController3D : NetworkBehaviour
         {
             menu.SetPlayer(0.0f, this.userName.Value);
             firstCrash = false;
+
+            rb.isKinematic = true;
         }
     }
 

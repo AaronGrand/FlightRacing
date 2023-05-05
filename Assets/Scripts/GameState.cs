@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Unity.Netcode;
 using Unity.Collections;
 
@@ -24,11 +21,6 @@ public class GameState : NetworkBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
-    }
-
-    private void Update()
-    {
-        //Debug.Log("GameState: " + gameState.Value.ToString());
     }
 
     public STATE GetState()

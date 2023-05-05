@@ -1,15 +1,13 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using TMPro;
 using Unity.Collections;
-using JetBrains.Annotations;
-using System.Linq;
-using static Menu;
 
 public class Menu : NetworkBehaviour
 {
+    #region Variables
+
     [Header("JoinCode")]
     [SerializeField] TextMeshProUGUI joinCode;
 
@@ -45,6 +43,8 @@ public class Menu : NetworkBehaviour
     private float countdownTime = 3.0f;
     private float timeRemaining;
 
+    #endregion
+
     #region Unity Methods
 
     private void Start()
@@ -63,6 +63,8 @@ public class Menu : NetworkBehaviour
         {
             escape.SetActive(!escape.activeSelf);
         }
+
+        //TIMER
         if(GameState.Instance.GetState() == STATE.TIMER)
         {
             timeRemaining -= Time.deltaTime;
@@ -80,13 +82,16 @@ public class Menu : NetworkBehaviour
                     GameState.Instance.SetState(STATE.INGAME);
                 }
                 countdownText.text = "";
-
-            } else if(GameState.Instance.GetState() == STATE.INGAME && !GameState.Instance.localGameFinished)
-            {
-                timeRemaining = 0f;
-                countdownText.text = "";
             }
         }
+
+        //AFTER TIMER
+        if (GameState.Instance.GetState() != STATE.TIMER)
+        {
+            countdownText.text = "";
+        }
+        
+        //INGAME AND LOCAL PLAYER INGAME
         if (GameState.Instance.GetState() == STATE.INGAME && !GameState.Instance.localGameFinished)
         {
             timer.text = checkPointScript.timer.ToString("0.00");
@@ -95,16 +100,10 @@ public class Menu : NetworkBehaviour
 
     #endregion
 
-    #region private methods
-
-    #endregion
-
     #region public methods
 
     public void SetPlayer(float time, FixedString32Bytes name)
     {
-
-
         //host finishes
         if (IsHost)
         {
