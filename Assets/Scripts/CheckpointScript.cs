@@ -60,9 +60,6 @@ public class CheckpointScript : MonoBehaviour
         //GAME FINISHED
         if (currentIndex == checkpoints.Count)
         {
-
-            //GameState.Instance.SetState(STATE.ENDED);
-
             flightController.EndGame();
 
             Debug.Log("Game Finished");

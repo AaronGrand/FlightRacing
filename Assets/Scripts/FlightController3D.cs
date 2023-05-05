@@ -4,12 +4,18 @@ using UnityEngine;
 using Unity.Netcode;
 using TMPro;
 using Unity.Collections;
+using UnityEditor;
 
 public class FlightController3D : NetworkBehaviour
 {
     #region Private variables
 
     [SerializeField] private Rigidbody rb;
+
+    private bool crashed = false;
+    private bool firstCrash = true;
+
+    private Menu menu;
 
     [Header("NetworkVariables")]
     [SerializeField] public NetworkVariable<FixedString32Bytes> userName = new NetworkVariable<FixedString32Bytes>("",NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
@@ -89,6 +95,9 @@ public class FlightController3D : NetworkBehaviour
 
     private void Start()
     {
+        crashed = false;
+        firstCrash = true;
+
         GameState.Instance.localGameFinished = false;
         if (IsHost)
         {
@@ -99,6 +108,14 @@ public class FlightController3D : NetworkBehaviour
             SetNameServerRpc(GameState.Instance.userName);
         }
         userNameText.text = GameState.Instance.userName.ToString();
+
+        if (IsLocalPlayer)
+        {
+            foreach(Transform transform in collidersRoot.GetComponentInChildren<Transform>())
+            {
+                transform.GetComponent<Collider>().isTrigger = false;
+            }
+        }
 
 
     }
@@ -169,6 +186,15 @@ public class FlightController3D : NetworkBehaviour
             UpdateThrust();
 
             UpdateLift();
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.CompareTag("Terrain"))
+        {
+            crashed = true;
+            EndGame();
         }
     }
 
@@ -311,6 +337,13 @@ public class FlightController3D : NetworkBehaviour
     {
         rb.useGravity = false;
         GameState.Instance.localGameFinished = true;
+
+
+        if (firstCrash && crashed)
+        {
+            menu.SetPlayer(0.0f, this.userName.Value);
+            firstCrash = false;
+        }
     }
 
     #endregion
@@ -397,6 +430,11 @@ public class FlightController3D : NetworkBehaviour
 
         this.gameObject.transform.position = pos.transform.position;
         this.gameObject.transform.rotation = pos.transform.rotation;
+
+        if (IsLocalPlayer)
+        {
+            menu = GameObject.FindGameObjectWithTag("Menu").GetComponent<Menu>();
+        }
     }
 
     #endregion

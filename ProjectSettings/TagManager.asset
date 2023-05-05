@@ -6,6 +6,8 @@ TagManager:
   tags:
   - CheckPoints
   - StartPosition
+  - Terrain
+  - Menu
   layers:
   - Default
   - TransparentFX
