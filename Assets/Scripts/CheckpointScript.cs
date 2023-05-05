@@ -70,4 +70,9 @@ public class CheckpointScript : MonoBehaviour
             checkpoints[currentIndex].SetActive(true);
         }
     }
+
+    public bool CheckIfCurrentIndex(int id)
+    {
+        return currentIndex == id;
+    }
 }

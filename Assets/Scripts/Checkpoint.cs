@@ -10,9 +10,16 @@ public class Checkpoint : MonoBehaviour
     {
         FlightController3D flightController = other.gameObject.GetComponentInParent<FlightController3D>();
 
-        if (flightController.IsLocalPlayer)
+        //correct checkpoint
+        if (flightController.IsLocalPlayer && CheckpointScript.Instance.CheckIfCurrentIndex(id))
         {
             CheckpointScript.Instance.NextIndex(flightController);
+        }
+        //not the right checkpoint
+        //not used, since checkpoints are not visible, but prevents errors
+        else
+        {
+            return;
         }
     }
 }

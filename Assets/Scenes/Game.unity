@@ -382,6 +382,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2070491677}
     m_Modifications:
+    - target: {fileID: 2124226061633923589, guid: 04a5eec85ca06054bab923ffd205012c, type: 3}
+      propertyPath: id
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8604255516041478944, guid: 04a5eec85ca06054bab923ffd205012c, type: 3}
       propertyPath: m_Name
       value: CheckPoint (2)
@@ -1686,6 +1690,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2070491677}
     m_Modifications:
+    - target: {fileID: 2124226061633923589, guid: 04a5eec85ca06054bab923ffd205012c, type: 3}
+      propertyPath: id
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8604255516041478944, guid: 04a5eec85ca06054bab923ffd205012c, type: 3}
       propertyPath: m_Name
       value: CheckPoint (1)
@@ -1736,6 +1744,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 04a5eec85ca06054bab923ffd205012c, type: 3}
+--- !u!1 &1552048429 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8604255516041478944, guid: 04a5eec85ca06054bab923ffd205012c, type: 3}
+  m_PrefabInstance: {fileID: 1552048428}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1552048430 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8604255516041478945, guid: 04a5eec85ca06054bab923ffd205012c, type: 3}
@@ -1748,6 +1761,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2070491677}
     m_Modifications:
+    - target: {fileID: 2124226061633923589, guid: 04a5eec85ca06054bab923ffd205012c, type: 3}
+      propertyPath: id
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8604255516041478944, guid: 04a5eec85ca06054bab923ffd205012c, type: 3}
       propertyPath: m_Name
       value: CheckPoint (3)
@@ -2446,6 +2463,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   checkpoints:
   - {fileID: 1852652524}
+  - {fileID: 1552048429}
   menu: {fileID: 652686161}
   gameIsFinished: 0
   gameStarted: 0
