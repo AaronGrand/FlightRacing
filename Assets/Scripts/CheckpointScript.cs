@@ -75,4 +75,10 @@ public class CheckpointScript : MonoBehaviour
     {
         return currentIndex == id;
     }
+
+    //used for map adjustments
+    public GameObject GetCurrentCheckpoint()
+    {
+        return checkpoints[currentIndex];
+    }
 }

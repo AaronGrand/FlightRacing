@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using UnityEditor;
 
 public class CameraFollow : NetworkBehaviour
 {
@@ -13,6 +14,7 @@ public class CameraFollow : NetworkBehaviour
     private void Start()
     {
         StartCoroutine(FindLocalPlayer(1f));
+        StartCoroutine(SetSpawnLocation(1f));
     }
 
     private void LateUpdate()
@@ -48,5 +50,15 @@ public class CameraFollow : NetworkBehaviour
             }
             //yield return new WaitForSeconds(0.1f);
         }
+    }
+
+    private IEnumerator SetSpawnLocation(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+
+        GameObject pos = GameObject.FindGameObjectWithTag("StartPosition");
+
+        this.gameObject.transform.position = pos.transform.position + Vector3.up * 5;
+        this.gameObject.transform.rotation = pos.transform.rotation;
     }
 }
