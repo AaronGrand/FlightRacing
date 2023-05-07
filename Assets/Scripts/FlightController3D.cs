@@ -99,11 +99,11 @@ public class FlightController3D : NetworkBehaviour
         {
             userName.Value = GameState.Instance.userName;
         }
-        if (IsClient && !IsHost)
+        if (IsLocalPlayer && IsClient && !IsHost)
         {
             SetNameServerRpc(GameState.Instance.userName);
         }
-        userNameText.text = GameState.Instance.userName.ToString();
+        UpdateName();
 
         if (IsLocalPlayer)
         {
@@ -374,28 +374,21 @@ public class FlightController3D : NetworkBehaviour
 
     //SET CLIENT NAME ON HOST
     [ServerRpc(RequireOwnership = false)]
-    private void SetNameServerRpc(FixedString32Bytes name)
+    private void SetNameServerRpc(FixedString32Bytes _name)
     {
         if (!IsLocalPlayer)
         {
-            userName.Value = name;
-            userNameText.text = name.ToString();
+            userName.Value = _name;
         }
-        if (IsLocalPlayer)
-        {
-            SetNameClientRpc(userName.Value);
-        }
+        SetNameClientRpc(userName.Value);
+        UpdateName();
     }
-
-    //SET HOST NAME ON CLIENT
+    
+    //SET NAMES ON CLIENT
     [ClientRpc]
     private void SetNameClientRpc(FixedString32Bytes name)
     {
-        if (!IsLocalPlayer)
-        {
-            userName.Value = name;
-            userNameText.text = name.ToString();
-        }
+        userNameText.text = name.ToString();
     }
 
     private IEnumerator SetSpawnLocation(float seconds)
@@ -411,6 +404,11 @@ public class FlightController3D : NetworkBehaviour
         {
             menu = GameObject.FindGameObjectWithTag("Menu").GetComponent<Menu>();
         }
+    }
+
+    private void UpdateName()
+    {
+        userNameText.text = userName.Value.ToString();
     }
 
     #endregion
