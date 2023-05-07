@@ -36,7 +36,6 @@ public class CameraFollow : NetworkBehaviour
 
         yield return new WaitForSeconds(seconds);
 
-        //while (target == null)
         {
             foreach (NetworkObject identity in FindObjectsOfType<NetworkObject>())
             {
@@ -46,7 +45,6 @@ public class CameraFollow : NetworkBehaviour
                     break;
                 }
             }
-            //yield return new WaitForSeconds(0.1f);
         }
     }
 

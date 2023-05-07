@@ -11,7 +11,7 @@ using UnityEngine.SceneManagement;
 public class HostManager : MonoBehaviour
 {
     [Header("Settings")]
-    public int maxConnections = 2;
+    public int maxConnections = 4;
     [SerializeField] private string nextSceneName = "Game";
 
     public string joinCode;
@@ -63,11 +63,17 @@ public class HostManager : MonoBehaviour
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
         NetworkManager.Singleton.StartHost();
-        StartGame();
+        StartScene(nextSceneName);
     }
 
-    public void StartGame()
+    /*public void StartGame()
     {
         NetworkManager.Singleton.SceneManager.LoadScene(nextSceneName, LoadSceneMode.Single);
+    }*/
+
+    public void StartScene(string name)
+    {
+        GameState.Instance.SetState(STATE.LOBBY);
+        NetworkManager.Singleton.SceneManager.LoadScene(name, LoadSceneMode.Single);
     }
 }

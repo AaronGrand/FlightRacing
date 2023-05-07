@@ -3,7 +3,7 @@ using Unity.Collections;
 
 public class GameState : NetworkBehaviour
 {
-    public NetworkVariable<STATE> gameState = new NetworkVariable<STATE>(STATE.NOT_STARTED, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+    public NetworkVariable<STATE> gameState = new NetworkVariable<STATE>(STATE.LOBBY, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     public FixedString32Bytes userName;
 
     public bool localGameFinished = false;
@@ -48,6 +48,7 @@ public class GameState : NetworkBehaviour
 
 public enum STATE
 {
+    LOBBY,
     NOT_STARTED,
     TIMER,
     INGAME,

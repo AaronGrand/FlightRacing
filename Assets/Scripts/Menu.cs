@@ -146,7 +146,7 @@ public class Menu : NetworkBehaviour
             player.GetComponent<ScoreBoardPlayer>().SetPlayer(new PlayerStats(time, name));
         }
     }
-
+    /*
     private void UpdateScoreBoard()
     {
         timer.text = "";
@@ -160,14 +160,7 @@ public class Menu : NetworkBehaviour
             GameObject player = Instantiate(playerScorePrefab, scoreBoard.transform);
             player.GetComponent<ScoreBoardPlayer>().SetPlayer(playerScores.Dequeue());
         }
-        /*
-        foreach(PlayerStats playerStats in playerScores)
-        {
-            Debug.Log(playerStats.name);
-            GameObject player = Instantiate(playerScorePrefab, scoreBoard.transform);
-            player.GetComponent<ScoreBoardPlayer>().SetPlayer(playerStats);
-        }*/
-    }
+    }*/
 
     #endregion
 

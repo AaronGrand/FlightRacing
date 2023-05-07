@@ -116,8 +116,16 @@ public class FlightController3D : NetworkBehaviour
 
     }
 
+    private bool spawned = false;
+
     private void Update()
     {
+        if(GameState.Instance.GetState() == STATE.NOT_STARTED && !spawned)
+        {
+            spawned = true;
+            StartCoroutine(SetSpawnLocation(1f));
+        }
+
         if (GameState.Instance.GetState() == STATE.INGAME && !GameState.Instance.localGameFinished) //GameState.Instance.GetState() == STATE.NOT_STARTED && (int)OwnerClientId == HostManager.Instance.maxConnections-1)
         {
             //INGAME
@@ -322,6 +330,37 @@ public class FlightController3D : NetworkBehaviour
         }
     }
 
+    public IEnumerator SetSpawnLocation(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+
+        GameObject pos = null;
+
+        if (GameState.Instance.GetState() == STATE.NOT_STARTED)
+        {
+            pos = GameObject.FindGameObjectWithTag("StartPosition");
+        }
+        else if (GameState.Instance.GetState() == STATE.LOBBY)
+        {
+            pos = GameObject.Find("SpawnPlayer" + (NetworkManager.Singleton.LocalClientId + 1).ToString());
+        }
+
+        if (pos == null)
+        {
+            NetworkManager.Singleton.Shutdown();
+            Application.Quit();
+            yield break;
+        }
+
+        this.gameObject.transform.position = pos.transform.position;
+        this.gameObject.transform.rotation = pos.transform.rotation;
+
+        if (GameState.Instance.GetState() == STATE.NOT_STARTED && IsLocalPlayer)
+        {
+            menu = GameObject.FindGameObjectWithTag("Menu").GetComponent<Menu>();
+        }
+    }
+
     #endregion
 
     #region Helper methods
@@ -389,21 +428,6 @@ public class FlightController3D : NetworkBehaviour
     private void SetNameClientRpc(FixedString32Bytes name)
     {
         userNameText.text = name.ToString();
-    }
-
-    private IEnumerator SetSpawnLocation(float seconds)
-    {
-        yield return new WaitForSeconds(seconds);
-
-        GameObject pos = GameObject.FindGameObjectWithTag("StartPosition");
-
-        this.gameObject.transform.position = pos.transform.position;
-        this.gameObject.transform.rotation = pos.transform.rotation;
-
-        if (IsLocalPlayer)
-        {
-            menu = GameObject.FindGameObjectWithTag("Menu").GetComponent<Menu>();
-        }
     }
 
     private void UpdateName()
