@@ -10,18 +10,14 @@ public class LobbyScript : NetworkBehaviour
 
     public void StartGame()
     {
+        this.gameObject.SetActive(false);
+
         GameState.Instance.SetState(STATE.NOT_STARTED);
         NetworkManager.Singleton.SceneManager.LoadScene(nextSceneName, LoadSceneMode.Single);
 
-        /*
         if (IsHost)
         {
-            foreach (GameObject player in GameObject.FindGameObjectsWithTag("Player"))
-            {
-                Debug.Log(player.name);
-                player.GetComponent<FlightController3D>().SetSpawnLocation(1f);
-            }
-        }*/
-
+            this.gameObject.SetActive(true);
+        }
     }
 }

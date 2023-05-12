@@ -120,9 +120,11 @@ public class FlightController3D : NetworkBehaviour
 
     private void Update()
     {
+
         if(GameState.Instance.GetState() == STATE.NOT_STARTED && !spawned)
         {
             spawned = true;
+            Prop.transform.Rotate(new Vector3(0, 0, Time.deltaTime * rotationSpeed));
             StartCoroutine(SetSpawnLocation(1f));
         }
 
