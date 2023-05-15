@@ -17,7 +17,7 @@ public class FlightController3D : NetworkBehaviour
 
     private Menu menu;
 
-    public Renderer[] renderer;
+    public Renderer[] render;
 
     [SerializeField] private GameObject[] models;
     private bool firstModelChange = true;
@@ -99,7 +99,7 @@ public class FlightController3D : NetworkBehaviour
 
     private void Awake()
     {
-        renderer = gameObject.GetComponentsInChildren<Renderer>(true);
+        render = gameObject.GetComponentsInChildren<Renderer>(true);
     }
 
 
@@ -136,18 +136,19 @@ public class FlightController3D : NetworkBehaviour
     private void Update()
     {
 
-        if(GameState.Instance.GetState() == STATE.NOT_STARTED && !spawned)
+        if(GameState.Instance.GetState() == STATE.NOT_STARTED)
         {
-            spawned = true;
             Prop[modelIndex.Value].transform.Rotate(new Vector3(0, 0, Time.deltaTime * rotationSpeed));
-            StartCoroutine(SetSpawnLocation(1f));
+            if (!spawned)
+            {
+                spawned = true;
+                StartCoroutine(SetSpawnLocation(1f));
+            }
         }
 
-        if (GameState.Instance.GetState() == STATE.INGAME && !GameState.Instance.localGameFinished) //GameState.Instance.GetState() == STATE.NOT_STARTED && (int)OwnerClientId == HostManager.Instance.maxConnections-1)
+        if (GameState.Instance.GetState() == STATE.INGAME && !GameState.Instance.localGameFinished)
         {
             //INGAME
-
-            //ROTATE PROP
             Prop[modelIndex.Value].transform.Rotate(new Vector3(0, 0, Time.deltaTime * rotationSpeed));
 
             if (IsOwner)
@@ -157,10 +158,6 @@ public class FlightController3D : NetworkBehaviour
                 Movement();
                 rb.isKinematic = false;
                 rb.useGravity = true;
-
-                //CHECK FOR BOOST
-                //ChangeWingTrailEffectThickness(0f);
-
             }
         }
 
@@ -493,7 +490,7 @@ public class FlightController3D : NetworkBehaviour
     
     private void UpdateColor()
     {
-        foreach (Renderer render in renderer)
+        foreach (Renderer render in render)
         {
             Material[] materials = render.materials;
 

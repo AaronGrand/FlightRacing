@@ -8,9 +8,6 @@ public class Menu : NetworkBehaviour
 {
     #region Variables
 
-    [Header("JoinCode")]
-    [SerializeField] TextMeshProUGUI joinCode;
-
     [Header("Timer")]
     [SerializeField] private GameObject escape;
     [SerializeField] private TextMeshProUGUI timer;
@@ -20,8 +17,6 @@ public class Menu : NetworkBehaviour
     [Header("Scoreboard")]
     [SerializeField] private GameObject scoreBoard;
     [SerializeField] private GameObject playerScorePrefab;
-
-    //public NetworkVariable<PlayerStats> playerScores = new NetworkVariable<PlayerStats>();
 
     public Queue<PlayerStats> playerScores = new Queue<PlayerStats>();
 
@@ -49,8 +44,6 @@ public class Menu : NetworkBehaviour
 
     private void Start()
     {
-        joinCode.text = HostManager.Instance.joinCode;
-
         timeRemaining = countdownTime;
 
         escape.SetActive(false);
@@ -146,21 +139,6 @@ public class Menu : NetworkBehaviour
             player.GetComponent<ScoreBoardPlayer>().SetPlayer(new PlayerStats(time, name));
         }
     }
-    /*
-    private void UpdateScoreBoard()
-    {
-        timer.text = "";
-        foreach (Transform child in scoreBoard.transform)
-        {
-            GameObject.Destroy(child.gameObject);
-        }
-
-        for(int i = 0; i < playerScores.Count; i++)
-        {
-            GameObject player = Instantiate(playerScorePrefab, scoreBoard.transform);
-            player.GetComponent<ScoreBoardPlayer>().SetPlayer(playerScores.Dequeue());
-        }
-    }*/
 
     #endregion
 

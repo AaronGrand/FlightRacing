@@ -66,11 +66,6 @@ public class HostManager : MonoBehaviour
         StartScene(nextSceneName);
     }
 
-    /*public void StartGame()
-    {
-        NetworkManager.Singleton.SceneManager.LoadScene(nextSceneName, LoadSceneMode.Single);
-    }*/
-
     public void StartScene(string name)
     {
         GameState.Instance.SetState(STATE.LOBBY);
