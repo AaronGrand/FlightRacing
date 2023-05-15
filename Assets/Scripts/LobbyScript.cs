@@ -8,16 +8,18 @@ public class LobbyScript : NetworkBehaviour
 {
     [SerializeField] private string nextSceneName = "Game";
 
-    public void StartGame()
+    private void Start()
     {
         this.gameObject.SetActive(false);
-
-        GameState.Instance.SetState(STATE.NOT_STARTED);
-        NetworkManager.Singleton.SceneManager.LoadScene(nextSceneName, LoadSceneMode.Single);
-
         if (IsHost)
         {
             this.gameObject.SetActive(true);
         }
+    }
+
+    public void StartGame()
+    {
+        GameState.Instance.SetState(STATE.NOT_STARTED);
+        NetworkManager.Singleton.SceneManager.LoadScene(nextSceneName, LoadSceneMode.Single);
     }
 }

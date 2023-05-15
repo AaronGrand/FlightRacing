@@ -3,6 +3,7 @@ using UnityEngine;
 using Unity.Netcode;
 using TMPro;
 using Unity.Collections;
+using System.Collections.Generic;
 
 public class FlightController3D : NetworkBehaviour
 {
@@ -10,13 +11,18 @@ public class FlightController3D : NetworkBehaviour
 
     [SerializeField] private Rigidbody rb;
 
+
     private bool crashed = false;
     private bool firstCrash = true;
 
     private Menu menu;
 
+    public Renderer[] renderer;
+
     [Header("NetworkVariables")]
     [SerializeField] public NetworkVariable<FixedString32Bytes> userName = new NetworkVariable<FixedString32Bytes>("",NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    [SerializeField]
+    public NetworkVariable<Color> networkedColor = new NetworkVariable<Color>(new Color(), NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI userNameText;
@@ -88,6 +94,11 @@ public class FlightController3D : NetworkBehaviour
         StartCoroutine(SetSpawnLocation(1f));
     }
 
+    private void Awake()
+    {
+        renderer = gameObject.GetComponentsInChildren<Renderer>();
+    }
+
 
     private void Start()
     {
@@ -113,7 +124,7 @@ public class FlightController3D : NetworkBehaviour
             }
         }
 
-
+        UpdateColor();
     }
 
     private bool spawned = false;
@@ -435,6 +446,48 @@ public class FlightController3D : NetworkBehaviour
     private void UpdateName()
     {
         userNameText.text = userName.Value.ToString();
+    }
+
+    
+    public void SetColor(Color newColor)
+    {
+        if (IsHost)
+        {
+            networkedColor.Value = newColor;
+            SetColorClientRpc(newColor);
+        }
+        if (IsLocalPlayer && IsClient && !IsHost)
+        {
+            SetColorServerRpc(newColor);
+        }
+        UpdateColor();
+    }
+
+    //SET CLIENT NAME ON HOST
+    [ServerRpc(RequireOwnership = false)]
+    private void SetColorServerRpc(Color newColor)
+    {
+        if (!IsLocalPlayer)
+        {
+            networkedColor.Value = newColor;
+        }
+        SetColorClientRpc(networkedColor.Value);
+        UpdateColor();
+    }
+
+    //SET NAMES ON CLIENT
+    [ClientRpc]
+    private void SetColorClientRpc(Color newColor)
+    {
+        UpdateColor();
+    }
+    
+    private void UpdateColor()
+    {
+        for (int i = 0; i < renderer.Length; i++)
+        {
+            renderer[i].material.color = networkedColor.Value;
+        }
     }
 
     #endregion

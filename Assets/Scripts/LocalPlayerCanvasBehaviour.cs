@@ -6,7 +6,8 @@ using Unity.Netcode;
 
 public class LocalPlayerCanvasBehaviour : MonoBehaviour
 {
-    private GameObject player;
+    private FlightController3D player;
+    private bool canChangeColor = false;
 
     [SerializeField] private TextMeshProUGUI joinCode;
     void Start()
@@ -20,6 +21,14 @@ public class LocalPlayerCanvasBehaviour : MonoBehaviour
     // COLOR CHANGE
     // PLANE MODEL CHANGE
 
+    public void OnColorChanged(Color newColor)
+    {
+        if (canChangeColor)
+        {
+            player.SetColor(newColor);
+        }
+    }
+
     // ALSO CREATE PREFS
 
     private IEnumerator FindLocalPlayer(float seconds)
@@ -30,7 +39,8 @@ public class LocalPlayerCanvasBehaviour : MonoBehaviour
             {
                 if (identity.IsLocalPlayer)
                 {
-                    player = identity.gameObject;
+                    player = identity.gameObject.GetComponent<FlightController3D>();
+                    canChangeColor = true;
                     break;
                 }
             }
