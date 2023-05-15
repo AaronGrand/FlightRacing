@@ -19,10 +19,13 @@ public class FlightController3D : NetworkBehaviour
 
     public Renderer[] renderer;
 
+    [SerializeField] private GameObject[] models;
+    private bool firstModelChange = true;
+
     [Header("NetworkVariables")]
     [SerializeField] public NetworkVariable<FixedString32Bytes> userName = new NetworkVariable<FixedString32Bytes>("",NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-    [SerializeField]
-    public NetworkVariable<Color> networkedColor = new NetworkVariable<Color>(new Color(), NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    [SerializeField] public NetworkVariable<Color> networkedColor = new NetworkVariable<Color>(new Color(), NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+    [SerializeField] public NetworkVariable<int> modelIndex = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI userNameText;
@@ -80,7 +83,7 @@ public class FlightController3D : NetworkBehaviour
     [SerializeField] Vector3 angularDrag;
 
     [Header("Animations")]
-    [SerializeField] private GameObject Prop;
+    [SerializeField] private GameObject[] Prop;
     [SerializeField] private float rotationSpeed;
 
 
@@ -91,12 +94,12 @@ public class FlightController3D : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        StartCoroutine(SetSpawnLocation(1f));
+        StartCoroutine(SetSpawnLocation(0.5f));
     }
 
     private void Awake()
     {
-        renderer = gameObject.GetComponentsInChildren<Renderer>();
+        renderer = gameObject.GetComponentsInChildren<Renderer>(true);
     }
 
 
@@ -125,6 +128,7 @@ public class FlightController3D : NetworkBehaviour
         }
 
         UpdateColor();
+        UpdateModel();
     }
 
     private bool spawned = false;
@@ -135,7 +139,7 @@ public class FlightController3D : NetworkBehaviour
         if(GameState.Instance.GetState() == STATE.NOT_STARTED && !spawned)
         {
             spawned = true;
-            Prop.transform.Rotate(new Vector3(0, 0, Time.deltaTime * rotationSpeed));
+            Prop[modelIndex.Value].transform.Rotate(new Vector3(0, 0, Time.deltaTime * rotationSpeed));
             StartCoroutine(SetSpawnLocation(1f));
         }
 
@@ -144,7 +148,7 @@ public class FlightController3D : NetworkBehaviour
             //INGAME
 
             //ROTATE PROP
-            Prop.transform.Rotate(new Vector3(0, 0, Time.deltaTime * rotationSpeed));
+            Prop[modelIndex.Value].transform.Rotate(new Vector3(0, 0, Time.deltaTime * rotationSpeed));
 
             if (IsOwner)
             {
@@ -355,14 +359,19 @@ public class FlightController3D : NetworkBehaviour
         }
         else if (GameState.Instance.GetState() == STATE.LOBBY)
         {
-            pos = GameObject.Find("SpawnPlayer" + (NetworkManager.Singleton.LocalClientId + 1).ToString());
+            Debug.Log((gameObject.GetComponent<NetworkObject>().OwnerClientId + 1).ToString());
+            pos = GameObject.Find("SpawnPlayer" + (gameObject.GetComponent<NetworkObject>().OwnerClientId + 1).ToString());
         }
 
         if (pos == null)
         {
-            NetworkManager.Singleton.Shutdown();
-            Application.Quit();
-            yield break;
+            if (IsLocalPlayer)
+            {
+                NetworkManager.Singleton.Shutdown();
+                Application.Quit();
+                yield break;
+            }
+            Destroy(gameObject);
         }
 
         this.gameObject.transform.position = pos.transform.position;
@@ -463,7 +472,7 @@ public class FlightController3D : NetworkBehaviour
         UpdateColor();
     }
 
-    //SET CLIENT NAME ON HOST
+    //SET COLOR ON HOST
     [ServerRpc(RequireOwnership = false)]
     private void SetColorServerRpc(Color newColor)
     {
@@ -475,7 +484,7 @@ public class FlightController3D : NetworkBehaviour
         UpdateColor();
     }
 
-    //SET NAMES ON CLIENT
+    //SET COLORS ON CLIENT
     [ClientRpc]
     private void SetColorClientRpc(Color newColor)
     {
@@ -484,10 +493,90 @@ public class FlightController3D : NetworkBehaviour
     
     private void UpdateColor()
     {
-        for (int i = 0; i < renderer.Length; i++)
+        foreach (Renderer render in renderer)
         {
-            renderer[i].material.color = networkedColor.Value;
+            Material[] materials = render.materials;
+
+            for (int i = 0; i < materials.Length; i++)
+            {
+                Color currentColor = materials[i].color;
+                Color.RGBToHSV(currentColor, out float hue, out float saturation, out float brightness);
+
+                Color.RGBToHSV(networkedColor.Value, out float newHue, out float newSaturation, out float _);
+                Color newColor = Color.HSVToRGB(newHue, newSaturation, brightness);
+                newColor.a = currentColor.a;
+
+                materials[i].color = newColor;
+            }
         }
+    }
+
+    public void NextModel()
+    {
+        if (IsHost)
+        {
+            modelIndex.Value = (modelIndex.Value + 1) % models.Length;
+            NextModelClientRpc();
+        }
+        if (IsLocalPlayer && IsClient && !IsHost)
+        {
+            NextModelServerRpc();
+        }
+    }
+
+    //SET MODEL ON HOST
+    [ServerRpc(RequireOwnership = false)]
+    private void NextModelServerRpc()
+    {
+        if (!IsLocalPlayer)
+        {
+            modelIndex.Value = (modelIndex.Value + 1) % models.Length;
+        }
+        NextModelClientRpc();
+        UpdateModel();
+    }
+
+    //SET MODELS ON CLIENT
+    [ClientRpc]
+    private void NextModelClientRpc()
+    {
+        UpdateModel();
+    }
+
+    private void UpdateModel()
+    {
+        for (int i = 0; i < models.Length; i++)
+        {
+            models[i].SetActive(false);
+        }
+
+        if(IsClient && IsHost)
+        {
+            models[modelIndex.Value % models.Length].SetActive(true);
+        }
+        else
+        {
+            if (firstModelChange)
+            {
+                models[modelIndex.Value].SetActive(true);
+            } else
+            {
+                if (modelIndex.Value == 0)
+                {
+                    models[models.Length - 1].SetActive(true);
+                }
+                else
+                {
+                    models[modelIndex.Value - 1 % models.Length].SetActive(true);
+                }
+            }
+        }
+
+        firstModelChange = false;
+
+        UpdateColor();
+
+        //models[modelIndex.Value].SetActive(true);
     }
 
     #endregion

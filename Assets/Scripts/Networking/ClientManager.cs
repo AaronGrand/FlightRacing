@@ -40,6 +40,7 @@ public class ClientManager : MonoBehaviour
 
         NetworkManager.Singleton.GetComponent<UnityTransport>().SetRelayServerData(relayServerData);
 
+        HostManager.Instance.joinCode = joinCode;
         NetworkManager.Singleton.StartClient();
     }
 }

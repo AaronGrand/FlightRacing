@@ -29,6 +29,11 @@ public class LocalPlayerCanvasBehaviour : MonoBehaviour
         }
     }
 
+    public void OnModelChange()
+    {
+        player.NextModel();
+    }
+
     // ALSO CREATE PREFS
 
     private IEnumerator FindLocalPlayer(float seconds)
