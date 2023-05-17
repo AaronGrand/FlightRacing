@@ -135,10 +135,10 @@ public class FlightController3D : NetworkBehaviour
 
     private void Update()
     {
+        Prop[modelIndex.Value].transform.Rotate(new Vector3(0, 0, Time.deltaTime * rotationSpeed));
 
-        if(GameState.Instance.GetState() == STATE.NOT_STARTED)
+        if (GameState.Instance.GetState() == STATE.NOT_STARTED)
         {
-            Prop[modelIndex.Value].transform.Rotate(new Vector3(0, 0, Time.deltaTime * rotationSpeed));
             if (!spawned)
             {
                 spawned = true;
@@ -149,7 +149,6 @@ public class FlightController3D : NetworkBehaviour
         if (GameState.Instance.GetState() == STATE.INGAME && !GameState.Instance.localGameFinished)
         {
             //INGAME
-            Prop[modelIndex.Value].transform.Rotate(new Vector3(0, 0, Time.deltaTime * rotationSpeed));
 
             if (IsOwner)
             {
