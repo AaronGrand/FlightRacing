@@ -606,7 +606,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 6146414860720391976}
-  renderer: []
+  render: []
   models:
   - {fileID: 5779416561918039962}
   - {fileID: 8374024431691427400}
@@ -1322,6 +1322,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7918335002988649766, guid: df5da3e58c010b847851682301a299e1, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9b7108b639727cd4290c71abc796c72e, type: 2}
     - target: {fileID: -7029948723529949830, guid: df5da3e58c010b847851682301a299e1, type: 3}
       propertyPath: m_Layer
       value: 6
@@ -1342,6 +1346,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: -2792561654668199019, guid: df5da3e58c010b847851682301a299e1, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9b7108b639727cd4290c71abc796c72e, type: 2}
     - target: {fileID: 157432382697966697, guid: df5da3e58c010b847851682301a299e1, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
