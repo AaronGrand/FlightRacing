@@ -585,8 +585,8 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6146414860720391991}
   serializedVersion: 2
-  m_Mass: 1000
-  m_Drag: 1
+  m_Mass: 2000
+  m_Drag: 0.5
   m_AngularDrag: 0
   m_UseGravity: 0
   m_IsKinematic: 0
@@ -650,8 +650,9 @@ MonoBehaviour:
   modelIndex:
     m_InternalValue: 0
   userNameText: {fileID: 3637306705621266423}
-  maxThrust: 50000
+  maxThrust: 100000
   throttleSpeedInc: 1
+  throttle: 0
   yawSpeed: 15
   pitchSpeed: 50
   rollSpeed: 60

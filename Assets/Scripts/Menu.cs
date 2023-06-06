@@ -111,8 +111,6 @@ public class Menu : NetworkBehaviour
             timer.text = "";
             SetPlayerServerRpc(time, name);
         }
-
-        //UpdateScoreBoard();
         scoreBoard.SetActive(true);
     }
 

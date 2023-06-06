@@ -16,11 +16,6 @@ public class LocalPlayerCanvasBehaviour : MonoBehaviour
         StartCoroutine(FindLocalPlayer(0.5f));
     }
 
-
-    // MAKE SOME BUTTONS HERE TO SAVE PREFS AND CREATE A UNIQUE PLANE
-    // COLOR CHANGE
-    // PLANE MODEL CHANGE
-
     public void OnColorChanged(Color newColor)
     {
         if (canChangeColor)
@@ -33,8 +28,6 @@ public class LocalPlayerCanvasBehaviour : MonoBehaviour
     {
         player.NextModel();
     }
-
-    // ALSO CREATE PREFS
 
     private IEnumerator FindLocalPlayer(float seconds)
     {

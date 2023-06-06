@@ -42,8 +42,8 @@ public class FlightController3D : NetworkBehaviour
     private float angleOfAttackPitch;
     private float angleOfAttackYaw;
 
-    private int throttleInput;
-    private float throttle;
+    private float minThrottle = 0.2f;
+    public float throttle;
 
 
     [Header("Rotating speeds")]
@@ -214,15 +214,7 @@ public class FlightController3D : NetworkBehaviour
             transform.Rotate(-Vector3.up * currentYawSpeed * Time.deltaTime);
         }
 
-        //Accelerate and deacclerate
-        if (Input.GetKey(KeyCode.Space))
-        {
-            throttleInput = 1;
-        }
-        else
-        {
-            throttleInput = 1;
-        }
+
 
         currentYawSpeed = yawSpeed;
         currentPitchSpeed = pitchSpeed;
@@ -262,12 +254,22 @@ public class FlightController3D : NetworkBehaviour
 
     void UpdateThrottle(float dt)
     {
-        float target = 0;
-        if (throttleInput > 0) target = 1;
-
-        //throttle input is [-1, 1]
-        //throttle is [0, 1]
-        throttle = MoveTo(throttle, target, throttleSpeedInc * Mathf.Abs(throttleInput), dt);
+        //Accelerate and deacclerate
+        if (Input.GetKey(KeyCode.Space))
+        {
+            throttle = MoveTo(throttle, 1, throttleSpeedInc * Mathf.Abs(1), dt);
+        }
+        else if(Input.GetKey(KeyCode.LeftShift))
+        {
+            if (throttle > minThrottle)
+            {
+                throttle -= throttleSpeedInc * dt;
+            } else
+            {
+                throttle = minThrottle;
+            }
+        }
+        
     }
 
     private void CalculateAngleOfAttack()
@@ -571,8 +573,6 @@ public class FlightController3D : NetworkBehaviour
         firstModelChange = false;
 
         UpdateColor();
-
-        //models[modelIndex.Value].SetActive(true);
     }
 
     #endregion
